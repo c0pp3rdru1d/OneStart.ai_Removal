@@ -30,7 +30,7 @@ Start-Sleep -Seconds 2
 
 # Remove OneStart directories for all users
 $file_paths = @(
-    "\AppData\Roaming\OneStart\",
+    "\AppData\Roaming\OneStart.ai\", #Changed Path - c0pp3rdru1d
     "\AppData\Local\OneStart.ai",
     "\AppData\Local\OneStart*\*"  # New path added
 )
