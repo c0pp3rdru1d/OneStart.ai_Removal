@@ -1,36 +1,49 @@
 # OneStart Removal Script
 
-# Define valid paths for OneStart files
+# Define valid paths for OneStart files, currently needs function
 $valid_paths = @(
     "C:\Users\*\AppData\Roaming\OneStart\*",
     "C:\Users\*\AppData\Local\OneStart*\*"
 )
 
-# Define process names related to OneStart
-$process_names = @("DBar")
+# Defines and stops process names related to OneStart
+function Stop-OneStartProcesses {
+    param(
+        [string[]]$ProcessNames = @("DBar") # Default process, allows expansion
+    )
 
-foreach ($proc in $process_names) {
-    $OL_processes = Get-Process -Name $proc -ErrorAction SilentlyContinue
+    $totalStopped = 0
 
-    if (-not $OL_processes) {
-        Write-Output "No running processes found for: $proc."
-    } else {
-        foreach ($process in $OL_processes) {
-            try {
-                Stop-Process -Id $process.Id -Force -ErrorAction Stop
-                Write-Output "Process '$proc' (PID: $($process.Id)) has been stopped."
-            } catch {
-                Write-Output "Failed to stop process '$proc': $_"
+    foreach ($proc in $ProcessNames) {
+        $runningProcesses = Get-Process -Name $proc -ErrorAction SilentlyContinue
+
+        if (-not $runningProcesses) {
+            Write-Output "No running processes found for: $proc."
+        } else {
+            foreach ($process in $runningProcesses) {
+                try {
+                    Stop-Process -Id $process.Id -Force -ErrorAction Stop
+                    Write-Output "Process '$proc' (PID: $($process.Id)) has been stopped."
+                    $totalStopped++
+                } catch {
+                    Write-Output "Failed to stop proces '$proc' (PID: $($process.Id)): $_"
+                    
+                }
             }
         }
     }
-}
 
-Start-Sleep -Seconds 2
+    if ($totalStopped -gt 0) {
+        Write-Output "Total processes stopped: $totalStopped"
+        Start-Sleep -Seconds 2 # Slight Delay for flow control
+    }
+
+    return $totalStopped
+}
 
 # Remove OneStart directories for all users
 $file_paths = @(
-    "\AppData\Roaming\OneStart.ai\", #Changed Path - c0pp3rdru1d
+    "\AppData\Roaming\OneStart.ai\", # Changed Path - c0pp3rdru1d
     "\AppData\Local\OneStart.ai",
     "\AppData\Local\OneStart*\*"  # New path added
 )
