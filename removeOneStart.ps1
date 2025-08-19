@@ -63,7 +63,11 @@ foreach ($userFolder in Get-ChildItem C:\Users -Directory) {
 }
 
 # Remove OneStart registry keys
-$reg_paths = @("\Software\OneStart.ai")
+$reg_paths = @(
+    "\HKEY_CLASSES_ROOT\OneStart.aiUpdate3Webuser",
+    "\HKEY_CURRENT_USER\Software\OneStart.ai",
+    "\HKEY_LOCAL_MACHINE\Software\OneStart.ai"
+)
 
 foreach ($registry_hive in Get-ChildItem Registry::HKEY_USERS) {
     foreach ($regpath in $reg_paths) {
@@ -98,7 +102,7 @@ foreach ($registry_hive in Get-ChildItem Registry::HKEY_USERS) {
 }
 
 # Remove scheduled tasks related to OneStart
-$schtasknames = @("OneStart Chromium", "OneStart Updater")
+$schtasknames = @("OneStart Chromium", "OneStart Updater", "OneStartAutoLaunchTask")
 
 $c = 0
 foreach ($task in $schtasknames) {
@@ -106,7 +110,7 @@ foreach ($task in $schtasknames) {
 
     if ($clear_tasks) {
         try {
-            Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction Stop
+            Unregister-ScheduledTask -TaskName $task -Confirm:$true -ErrorAction Stop
             Write-Output "Removed scheduled task: '$task'."
             $c++
         } catch {
