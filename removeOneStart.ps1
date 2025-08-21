@@ -64,7 +64,7 @@ foreach ($userFolder in Get-ChildItem C:\Users -Directory) {
 
 # Remove OneStart registry keys
 $reg_paths = @(
-    "\HKEY_CLASSES_ROOT\OneStart.aiUpdate3Webuser",
+    "\HKEY_CLASSES_ROOT\OneStart.aiUpdate.Update3Webuser",
     "\HKEY_CURRENT_USER\Software\OneStart.ai",
     "\HKEY_LOCAL_MACHINE\Software\OneStart.ai"
 )
