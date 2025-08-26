@@ -104,7 +104,7 @@ foreach ($registry_hive in Get-ChildItem Registry::HKEY_USERS) {
 # Remove scheduled tasks related to OneStart
 $schtasknames = @("OneStart Chromium", "OneStart Updater", "OneStartAutoLaunchTask")
 
-$c = 0
+
 foreach ($task in $schtasknames) {
     $clear_tasks = Get-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue
 
@@ -112,13 +112,11 @@ foreach ($task in $schtasknames) {
         try {
             Unregister-ScheduledTask -TaskName $task -Confirm:$true -ErrorAction Stop
             Write-Output "Removed scheduled task: '$task'."
-            $c++
+            
         } catch {
             Write-Output "Failed to remove scheduled task: '$task' - $_"
         }
     }
 }
 
-if ($c -eq 0) {
-    Write-Output "No OneStart scheduled tasks were found."
-}
+
